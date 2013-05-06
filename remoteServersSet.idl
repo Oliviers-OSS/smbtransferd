@@ -1,0 +1,42 @@
+#ifndef _REMOTE_SERVERS_SET_
+#define _REMOTE_SERVERS_SET_
+
+module RemoteServersSet {
+
+        exception error {
+           long code; //(see errno.h for meanings)
+        };
+
+        // main interface
+	interface Management {
+		attribute string currentServer;              // current used server (name or ip address)
+		attribute boolean autoMoveMode;            // true means the client will move to the next server in the list when a communication error occurs
+		readonly attribute long currentCommStatus;  // current communication with the current server status (see errno.h for meanings)
+		long start();
+	};
+
+        // data about the event
+	struct Event {
+		long status;    // negatives values means error, positives values means informations or warning (see errno.h for meanings)
+		string message; // additional information
+	};
+
+        // client's interface to be notified of an event
+	interface EventListener {
+		oneway void notifyEvent(in Event newEvent);
+	};
+
+        // callbacks management:
+	interface EventSubscriber {
+                // register to be notifed when an event occurs
+                const unsigned long errorsEventFilters      = 1; // 2<<0
+                const unsigned long warningsEventFilters    = 2; // 2<<1
+                const unsigned long informationEventFilters = 4; // 2<<2
+
+		unsigned long subscribe(in EventListener clientsInterface, in unsigned long filter);
+                // unregisters to stop events notification
+		unsigned long unsubscribe(in EventListener clientsInterface);
+	};
+};
+
+#endif // _REMOTE_SERVERS_SET_

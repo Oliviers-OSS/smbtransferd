@@ -1,0 +1,2 @@
+#!/bin/sh
+-ORBInitRef NameService=file:///tmp/namingService.ior

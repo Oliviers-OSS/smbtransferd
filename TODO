@@ -1,0 +1,4 @@
+daemon/program stop (on signals)
+CORBA interface
+make rpm
+remove events subscribers management when CORBA is not enabled
